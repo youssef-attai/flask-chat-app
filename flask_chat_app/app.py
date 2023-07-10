@@ -20,7 +20,7 @@ from bson.objectid import ObjectId
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
-monkey.patch_all()
+monkey.patch_all(ssl=False)
 
 app = Flask(__name__)
 

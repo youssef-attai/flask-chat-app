@@ -1,9 +1,5 @@
-# import gevent.monkey
-# gevent.monkey.patch_all(thread=False)
-
 import logging
 import os
-import geventwebsocket
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_socketio import SocketIO, emit
 from flask_login import (
@@ -17,14 +13,12 @@ from flask_login import (
 
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from gevent.pywsgi import WSGIServer
-from geventwebsocket.handler import WebSocketHandler
 
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-socketio = SocketIO(app, async_mode="gevent")
+socketio = SocketIO(app, async_mode="eventlet")
 
 
 # Flask-Login configuration
@@ -200,5 +194,4 @@ def handle_message(message):
 
 
 if __name__ == "__main__":
-    server = WSGIServer(("0.0.0.0", 8080), app, handler_class=WebSocketHandler)
-    server.serve_forever()
+    socketio.run(app, host="0.0.0.0", port=8080)

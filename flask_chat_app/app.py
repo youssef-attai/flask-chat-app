@@ -1,4 +1,5 @@
 import geventwebsocket
+from gevent import monkey
 import logging
 import os
 from datetime import datetime
@@ -18,6 +19,8 @@ from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
+
+monkey.patch_all()
 
 app = Flask(__name__)
 

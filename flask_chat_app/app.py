@@ -19,7 +19,13 @@ def index():
 
 @socketio.on("message")
 def handle_message(message):
-    emit("message", message, broadcast=True)
+    emit(
+        "message",
+        {
+            "text": message["text"],
+        },
+        broadcast=True,
+    )
 
 
 if __name__ == "__main__":

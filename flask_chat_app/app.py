@@ -11,7 +11,6 @@ from flask_login import (
     login_required,
     current_user,
 )
-
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
@@ -19,15 +18,6 @@ from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
 logging.basicConfig(level=logging.INFO)
-
-app = Flask(__name__)
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-socketio = SocketIO(app, async_mode="gevent")
-
-
-# Flask-Login configuration
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 # MongoDB configuration
 MONGO_URI = os.getenv("MONGO_URI")
@@ -38,6 +28,16 @@ client = MongoClient(
     server_api=ServerApi("1"),
 )
 db = client["flaskchatapp"]
+
+app = Flask(__name__)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+socketio = SocketIO(app, async_mode="gevent")
+
+
+# Flask-Login configuration
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 # chat_collection = db["chat"]
 # user_collection = db["users"]
 

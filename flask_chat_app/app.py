@@ -30,14 +30,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # MongoDB configuration
-# MONGO_URI = os.getenv("MONGO_URI")
-# logging.info(f"Connecting to MongoDB at {MONGO_URI}")
+MONGO_URI = os.getenv("MONGO_URI")
+logging.info(f"Connecting to MongoDB at {MONGO_URI}")
 
-# client = MongoClient(
-#     MONGO_URI,
-#     server_api=ServerApi("1"),
-# )
-# db = client["flaskchatapp"]
+client = MongoClient(
+    MONGO_URI,
+    server_api=ServerApi("1"),
+)
+db = client["flaskchatapp"]
 # chat_collection = db["chat"]
 # user_collection = db["users"]
 
@@ -58,6 +58,11 @@ user_collection = [
     {
         "_id": "2",
         "username": "omar",
+        "password": "1",
+    },
+    {
+        "_id": "3",
+        "username": "ashraf",
         "password": "1",
     },
 ]

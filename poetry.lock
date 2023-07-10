@@ -397,6 +397,20 @@ setproctitle = ["setproctitle"]
 tornado = ["tornado (>=0.2)"]
 
 [[package]]
+name = "gunicorn-websocket"
+version = "0.0.3"
+description = "Websocket handler for the gunicorn server, a Python wsgi server, fork and modify from gevent-websocket"
+optional = false
+python-versions = "*"
+files = [
+    {file = "gunicorn-websocket-0.0.3.tar.gz", hash = "sha256:87a2740c7dd191673c113155d989e7bcfa1a96d5030b9b195e3aa131217b5f73"},
+]
+
+[package.dependencies]
+gevent = "*"
+gunicorn = "*"
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -777,4 +791,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c83501dedfe9339be91d259f0c90f9b7bd806861b19fa4e8bbeb792b2b053c98"
+content-hash = "7c28d31644c5fd441ac375c752760a7249c31b98185aca022af984bd3b677ea2"

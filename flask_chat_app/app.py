@@ -1,3 +1,4 @@
+import geventwebsocket
 import logging
 import os
 from datetime import datetime
@@ -31,10 +32,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
-socketio = SocketIO(
-    app,
-    async_mode="gevent",
-)
+socketio = SocketIO(app, async_mode="gevent")
 
 # MongoDB configuration
 MONGO_URI = os.getenv("MONGO_URI")
@@ -179,5 +177,5 @@ def handle_message(message):
 
 
 if __name__ == "__main__":
-    server = WSGIServer(("127.0.0.1", 5000), app, handler_class=WebSocketHandler)
+    server = WSGIServer(("0.0.0.0", 8080), app, handler_class=WebSocketHandler)
     server.serve_forever()

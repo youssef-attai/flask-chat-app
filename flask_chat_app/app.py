@@ -1,3 +1,7 @@
+import gevent.monkey
+
+gevent.monkey.patch_all()
+
 import logging
 import os
 import geventwebsocket
@@ -11,25 +15,15 @@ from flask_login import (
     login_required,
     current_user,
 )
+
+import pymongo
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
-from gevent import monkey
-monkey.patch_all()
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
 logging.basicConfig(level=logging.INFO)
-
-# MongoDB configuration
-MONGO_URI = os.getenv("MONGO_URI")
-logging.info(f"Connecting to MongoDB at {MONGO_URI}")
-
-client = MongoClient(
-    MONGO_URI,
-    server_api=ServerApi("1"),
-)
-db = client["flaskchatapp"]
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -40,41 +34,55 @@ socketio = SocketIO(app, async_mode="gevent")
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# chat_collection = db["chat"]
-# user_collection = db["users"]
+# MongoDB configuration
+MONGO_URI = os.getenv("MONGO_URI")
+logging.info(f"Connecting to MongoDB at {MONGO_URI}")
+
+client = MongoClient(
+    MONGO_URI,
+    server_api=ServerApi("1"),
+)
+db = client["flaskchatapp"]
+chat_collection = db["chat"]
+user_collection = db["users"]
 
 
 # In-memory database
-chat_collection = [
-    {
-        "text": "Hello",
-        "userId": "1",
-    },
-]
-user_collection = [
-    {
-        "_id": "1",
-        "username": "youssef",
-        "password": "1",
-    },
-    {
-        "_id": "2",
-        "username": "omar",
-        "password": "1",
-    },
-    {
-        "_id": "3",
-        "username": "ashraf",
-        "password": "1",
-    },
-]
+# chat_collection = [
+#     {
+#         "text": "Hello",
+#         "userId": "1",
+#     },
+# ]
+# user_collection = [
+#     {
+#         "_id": "1",
+#         "username": "youssef",
+#         "password": "1",
+#     },
+#     {
+#         "_id": "2",
+#         "username": "omar",
+#         "password": "1",
+#     },
+#     {
+#         "_id": "3",
+#         "username": "ashraf",
+#         "password": "1",
+#     },
+# ]
 
 
 def find_user_by(key, value):
-    for user in user_collection:
-        if user[key] == value:
-            return user
-    return None
+    # for user in user_collection:
+    #     if user[key] == value:
+    #         return user
+    # return None
+    return user_collection.find_one(
+        {
+            key: ObjectId(value) if key == "_id" else value,
+        }
+    )
 
 
 # User model
@@ -113,7 +121,7 @@ def unauthorized_callback():
 @app.route("/")
 @login_required
 def index():
-    messages = chat_collection
+    messages = chat_collection.find()
     processed_messages = []
     for message in messages:
         user_id = str(message["userId"])
@@ -159,11 +167,10 @@ def register():
         else:
             # Create a new user document
             new_user = {
-                "_id": str(len(user_collection) + 1),
                 "username": username,
                 "password": password,
             }
-            user_collection.append(new_user)
+            user_collection.insert_one(new_user)
             flash("Registration successful. Please log in.", "success")
             return redirect(url_for("login"))
     return render_template("register.html")
@@ -185,8 +192,8 @@ def handle_message(message):
         "text": message["text"],
         "userId": user_id,
     }
-    chat_collection.append(new_message)
-    # del new_message["_id"]
+    chat_collection.insert_one(new_message)
+    del new_message["_id"]
 
     emit(
         "message",

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Registration</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/globals.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/register.css') }}" />
+</head>
+
+<body>
+  <h1>Registration</h1>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class="flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  <form method="POST" action="{{ url_for('register') }}">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <input type="submit" value="Register">
+  </form>
+  <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+</body>
+
+</html>

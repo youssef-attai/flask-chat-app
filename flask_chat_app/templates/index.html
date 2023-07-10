@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Chat App</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/globals.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}" />
+</head>
+
+<body>
+  <h1>Chat App</h1>
+  {% if current_user.is_authenticated %}
+  <p>Welcome, {{ current_user.username }}!</p>
+  <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+  <p>Not logged in. <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Register</a></p>
+  {% endif %}
+  <div id="chat">
+    <ul id="messages">
+      {% for message in messages %}
+      <li>
+        <span>{{ message.user.username }}:</span>
+        <span>{{ message.text }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <form id="message-form" action="">
+      <input type="text" id="message-input" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+  <script>
+    var socket = io();
+
+    document.getElementById('message-form').onsubmit = function (e) {
+      e.preventDefault();
+      var messageInput = document.getElementById('message-input');
+      socket.emit('message', {
+        "text": messageInput.value,
+        "userId": "{{ userId }}",
+      });
+      messageInput.value = '';
+    };
+
+    socket.on('message', function (message) {
+      var li = document.createElement('li');
+      li.appendChild(document.createTextNode(message.user.username + ': ' + message.text));
+      document.getElementById('messages').appendChild(li);
+    });
+  </script>
+</body>
+
+</html>

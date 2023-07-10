@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Start the server
+gunicorn -k gevent --worker-class=geventwebsocket.gunicorn.workers.GeventWebSocketWorker -b 0.0.0.0:8080 flask_chat_app.app:app

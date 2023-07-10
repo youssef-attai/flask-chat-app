@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Export env vars from .env file
+export $(cat .env | xargs)
+
+# Start the development server
+poetry run python flask_chat_app/app.py

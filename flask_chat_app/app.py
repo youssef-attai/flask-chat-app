@@ -1,8 +1,11 @@
+import logging
 import geventwebsocket
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"

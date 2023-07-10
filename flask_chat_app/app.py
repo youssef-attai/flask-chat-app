@@ -31,7 +31,10 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
-socketio = SocketIO(app)
+socketio = SocketIO(
+    app,
+    async_mode="gevent",
+)
 
 # MongoDB configuration
 MONGO_URI = os.getenv("MONGO_URI")

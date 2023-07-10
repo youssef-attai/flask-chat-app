@@ -13,7 +13,6 @@
     <ul id="messages">
       {% for message in messages %}
       <li>
-        <span>{{ message.user.username }}:</span>
         <span>{{ message.text }}</span>
       </li>
       {% endfor %}
@@ -33,14 +32,13 @@
       var messageInput = document.getElementById('message-input');
       socket.emit('message', {
         "text": messageInput.value,
-        "userId": "{{ userId }}",
       });
       messageInput.value = '';
     };
 
     socket.on('message', function (message) {
       var li = document.createElement('li');
-      li.appendChild(document.createTextNode(message.user.username + ': ' + message.text));
+      li.appendChild(document.createTextNode(message.text));
       document.getElementById('messages').appendChild(li);
     });
   </script>
